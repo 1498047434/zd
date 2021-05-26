@@ -8,7 +8,6 @@ import javax.persistence.EntityListeners;
 
 @Data
 @Entity
-@EntityListeners(AuditingEntityListener.class)
 public class SeeAppointment {
 
 

@@ -8,6 +8,6 @@ public interface UserService {
 
     User register(String username, String password, String name);
 
-    User update(User oldUser);
+    User update(User user);
 
 }

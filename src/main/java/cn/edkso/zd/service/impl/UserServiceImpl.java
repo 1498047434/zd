@@ -4,9 +4,12 @@ import cn.edkso.zd.dao.UserDao;
 import cn.edkso.zd.entry.User;
 import cn.edkso.zd.service.UserService;
 import cn.edkso.zd.utils.MD5Utils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -35,7 +38,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User update(User oldUser) {
+    public User update(User user) {
+
+        User oldUser = userDao.findById(user.getId()).get();
+        if (StringUtils.isNotBlank(user.getPassword())){
+            oldUser.setPassword(MD5Utils.md5(user.getPassword()));
+        }
+        if (StringUtils.isNotBlank(user.getName())){
+            oldUser.setName(user.getName());
+        }
+        if (StringUtils.isNotBlank(user.getIdcard())){
+            oldUser.setIdcard(user.getIdcard());
+        }
+        if (StringUtils.isNotBlank(user.getIdcardImg())){
+            oldUser.setIdcardImg(user.getIdcardImg());
+        }
+        if (user.getState() != null){
+            oldUser.setState(user.getState());
+        }
         return userDao.save(oldUser);
     }
 }

@@ -12,7 +12,6 @@ import java.sql.Timestamp;
 
 @Data
 @Entity
-@EntityListeners(AuditingEntityListener.class)
 public class User {
 
     @Id
@@ -24,9 +23,7 @@ public class User {
     private String name;
     private Integer state = 1;
 
-    @CreatedDate
-    private Timestamp createTime;
+    private String idcard;
+    private String idcardImg;
 
-    @LastModifiedDate
-    private Timestamp updateTime;
 }
