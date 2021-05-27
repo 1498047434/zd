@@ -86,13 +86,15 @@ public class UserController {
             @ApiImplicitParam(name = "password" ,value = "用户密码", required = true),
             @ApiImplicitParam(name = "name" ,value = "用户姓名", required = true),
             @ApiImplicitParam(name = "idcard" ,value = "身份证号", required = true),
-            @ApiImplicitParam(name = "idcardImg" ,value = "身份证图片", required = true),
+            @ApiImplicitParam(name = "filePath" ,value = "身份证图片路径", required = true),
     })
     @ApiOperationSupport(
-            ignoreParameters = {"id","state"}
+            ignoreParameters = {"id","state","idcardImg"}
     )
     @PostMapping("register")
-    public ResultVO register(User user){
+    public ResultVO register(User user,String filePath){
+
+        user.setIdcardImg(filePath);
 
         try {
             User resUser = userService.register(user);
