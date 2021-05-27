@@ -19,6 +19,7 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDao userDao;
+
     @Override
     public User login(String username, String password) {
         User user = userDao.findByUsernameAndPassword(username, MD5Utils.md5(password));
@@ -29,16 +30,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User register(String username, String password, String name) {
-        User resUser = userDao.findByUsername(username);
+    public User register(User user) {
+        User resUser = userDao.findByUsername(user.getName());
         if (resUser != null){
             throw new CDException(ExceptionDefault.RECORD_EXIST);
         }
-        User user = new User();
-        user.setState(1);
-        user.setName(name);
-        user.setUsername(username);
-        user.setPassword(MD5Utils.md5(password));
+
+        user.setPassword(MD5Utils.md5(user.getPassword()));
         resUser = userDao.save(user);
         return resUser;
     }

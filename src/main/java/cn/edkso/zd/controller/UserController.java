@@ -80,19 +80,24 @@ public class UserController {
     }
 
 
-    @ApiOperation(value = "用户注册")
+    @ApiOperation(value = "用户注册") //注册的时候就需要上传身份证号和照片
     @ApiImplicitParams({
             @ApiImplicitParam(name = "username" ,value = "用户账号", required = true),
             @ApiImplicitParam(name = "password" ,value = "用户密码", required = true),
-            @ApiImplicitParam(name = "name" ,value = "用户姓名", required = true)
+            @ApiImplicitParam(name = "name" ,value = "用户姓名", required = true),
+            @ApiImplicitParam(name = "idcard" ,value = "身份证号", required = true),
+            @ApiImplicitParam(name = "idcardImg" ,value = "身份证图片", required = true),
     })
+    @ApiOperationSupport(
+            ignoreParameters = {"id","state"}
+    )
     @PostMapping("register")
-    public ResultVO register(String username, String password, String name){
+    public ResultVO register(User user){
 
         try {
-            User user = userService.register(username,password,name);
-            if (user != null){
-                return ResultVOUtil.success(user);
+            User resUser = userService.register(user);
+            if (resUser != null){
+                return ResultVOUtil.success(resUser);
             }
         }catch (Exception e){
             return ResultVOUtil.error(e.getMessage());
@@ -103,13 +108,11 @@ public class UserController {
 
     @ApiOperation(value = "用户修改")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "idcard" ,value = "身份证号", required = false),
-            @ApiImplicitParam(name = "idcardImg" ,value = "身份证路径", required = false),
             @ApiImplicitParam(name = "oldPassword" ,value = "旧账号密码", required = false),
             @ApiImplicitParam(name = "password" ,value = "修改的密码", required = false),
             @ApiImplicitParam(name = "name" ,value = "用户姓名", required = false),
     })
-    @ApiOperationSupport(ignoreParameters = {"id","username","createTime","updateTime"})
+    @ApiOperationSupport(ignoreParameters = {"id","username","state","idcard","idcardImg"})
     @PostMapping("update")
     public ResultVO update(User user, String oldPassword){
         //1. 通过token，从redis获取用户

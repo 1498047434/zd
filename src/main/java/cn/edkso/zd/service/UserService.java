@@ -6,8 +6,8 @@ public interface UserService {
 
     public User login(String username, String password);
 
-    User register(String username, String password, String name);
 
     User update(User user);
 
+    User register(User user);
 }

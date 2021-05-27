@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Transactional
 public class LandServiceImpl implements LandService {
 
     @Autowired
@@ -70,7 +72,7 @@ public class LandServiceImpl implements LandService {
 
 
             //增加筛选条件5(土地管理员精确匹配)
-            if (admin != null && admin.getGrade() == 2){
+            if (admin != null && admin.getGrade() == 2){  //若是超级管理员，获取到的是所有管理员发布的土地
                 predicate.getExpressions().add(cb.equal(root.get("adminId"), admin.getId()));
             }
 

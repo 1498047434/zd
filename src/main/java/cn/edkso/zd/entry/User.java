@@ -21,7 +21,7 @@ public class User {
     private String username;
     private String password;
     private String name;
-    private Integer state = 1;
+    private Integer state;
 
     private String idcard;
     private String idcardImg;

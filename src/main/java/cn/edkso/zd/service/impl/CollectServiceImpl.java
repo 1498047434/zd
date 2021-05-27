@@ -5,10 +5,12 @@ import cn.edkso.zd.entry.Collect;
 import cn.edkso.zd.service.CollectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class CollectServiceImpl implements CollectService {
 
     @Autowired
