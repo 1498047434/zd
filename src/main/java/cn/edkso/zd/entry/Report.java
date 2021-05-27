@@ -16,10 +16,14 @@ public class Report {
     private Integer id;
 
     private Integer landId;
-    private String landName;
+    private String landAddress;
     private Integer landClassify;
+
     private Integer userId;
     private String userName;
+
     private Integer adminId;
     private String adminName;
+
+    private Integer state;
 }

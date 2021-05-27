@@ -9,5 +9,9 @@ import java.util.Map;
 
 public interface ReportService {
 
-    Page<Report> listByPage(Integer page, Integer limit, Report report, ThreadLocal<Map<String, Object>> tl);
+    Page<Report> listByPage(Integer page, Integer limit, ThreadLocal<Map<String, Object>> tl);
+
+    public Report add(Report report);
+
+    public Report update(Report report);
 }
