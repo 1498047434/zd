@@ -29,13 +29,6 @@ public class FilesController {
 
     @PostMapping("upload")
     public ResultVO upload(MultipartFile file){
-        //1. 通过token，从redis获取用户
-        String access_token = ServletUtils.getRequest().getHeader(ConfigDefault.USER_TOKEN_NAME);
-        User oldUser = (User) redisTemplate.opsForValue().get(access_token);
-        if(oldUser == null){
-            return ResultVOUtil.error(ResultEnum.NOT_LOGGED_IN); //没有登录
-        }
-
         try {
             String filePath = SaveFileUtil.saveFile("/upload/img", file);
             Map<String, String> map = new HashMap<>();

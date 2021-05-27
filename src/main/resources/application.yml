@@ -12,9 +12,9 @@ spring:
     properties:
       hibernate:
         format_sql=true:
-    redis:
-      host: 1.15.88.192
-      port: 6379
+  redis:
+    host: 1.15.88.192
+    port: 6379
   servlet: #上传文件
     multipart:
       max-file-size: 32MB #单个文件大小限制
