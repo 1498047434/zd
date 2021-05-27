@@ -28,6 +28,7 @@ public class Land {
     private Integer bidUserId;
     private String bidUserName;
     private Integer state = 1;
+    private String agreementImg;
 
     @Transient //不进行持久化（与数据库非关）
     private Integer isCollect = 0; //0未收藏，1收藏

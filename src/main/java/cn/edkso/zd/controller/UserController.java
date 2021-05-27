@@ -88,10 +88,16 @@ public class UserController {
     })
     @PostMapping("register")
     public ResultVO register(String username, String password, String name){
-        User user = userService.register(username,password,name);
-        if (user != null){
-            return ResultVOUtil.success(user);
+
+        try {
+            User user = userService.register(username,password,name);
+            if (user != null){
+                return ResultVOUtil.success(user);
+            }
+        }catch (Exception e){
+            return ResultVOUtil.error(e.getMessage());
         }
+
         return ResultVOUtil.error(ResultEnum.REGISTER_ERROR);
     }
 

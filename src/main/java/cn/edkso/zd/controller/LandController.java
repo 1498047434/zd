@@ -49,10 +49,10 @@ public class LandController {
     })
     @ApiOperationSupport(
             ignoreParameters = {"id","state","area","price", "contractPeriod","introduction",
-                    "adminId","adminName", "userId","userName","bidPrice"}
+                    "adminId","adminName", "userId","userName","bidPrice","agreementImg"}
     )
-    @GetMapping("listByPage")
-    public ResultVO listByPage(Integer page, Integer limit, Land land,
+    @GetMapping("listByPageForUser")
+    public ResultVO listByPageForUser(Integer page, Integer limit, Land land,
                                Integer contractPeriodStart, Integer contractPeriodEnd){
 
         //1. 通过token，从redis获取用户
@@ -73,6 +73,45 @@ public class LandController {
         return ResultVOUtil.success(landPage);
     }
 
+
+    @ApiOperation(value = "获取土地列表-分页(管理员获取自己的)")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "page" ,value = "当前页数", required = true),
+            @ApiImplicitParam(name = "limit" ,value = "每页限制数", required = true),
+            @ApiImplicitParam(name = "address" ,value = "土地地址", required = false),
+            @ApiImplicitParam(name = "classify" ,value = "土地分类", required = false),
+            @ApiImplicitParam(name = "contractPeriodStart" ,value = "土地承包年限最低", required = false),
+            @ApiImplicitParam(name = "contractPeriodEnd" ,value = "土地承包年限最高", required = false),
+            @ApiImplicitParam(name = "isBidding" ,value = "是否开始竞价", required = false),
+            @ApiImplicitParam(name = "0.." ,value = "是否收藏", required = false),
+    })
+    @ApiOperationSupport(
+            ignoreParameters = {"id","state","area","price", "contractPeriod","introduction",
+                    "adminId","adminName", "userId","userName","bidPrice","agreementImg","isCollect"}
+    )
+    @GetMapping("listByPageForAdmin")
+    public ResultVO listByPageForAdmin(Integer page, Integer limit, Land land,
+                                      Integer contractPeriodStart, Integer contractPeriodEnd){
+
+        //1. 通过token，从redis获取用户
+        String access_token = ServletUtils.getRequest().getHeader(ConfigDefault.ADMIN_TOKEN_NAME);
+        Admin redisAdmin = (Admin) redisTemplate.opsForValue().get(access_token);
+        if(redisAdmin == null){
+            return ResultVOUtil.error(ResultEnum.NOT_LOGGED_IN); //没有登录
+        }
+
+        ThreadLocal<Map<String, Object>> tl = new ThreadLocal();
+        Map<String, Object> map = new HashMap<>();
+        map.put("contractPeriodStart", contractPeriodStart);
+        map.put("contractPeriodEnd", contractPeriodEnd);
+        map.put("admin", redisAdmin);
+        tl.set(map);
+
+        Page<Land> landPage = landService.listByPage(page, limit,land,tl);
+        return ResultVOUtil.success(landPage);
+    }
+
+
     @ApiOperation(value = "增加土地记录")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "address" ,value = "土地地址", required = true),
@@ -84,7 +123,7 @@ public class LandController {
     })
     @ApiOperationSupport(
             ignoreParameters = {"id","userId","bidPrice","bidUserId", "bidUserName","userName",
-                    "adminId","adminName", "isBidding","state"}
+                    "adminId","adminName", "isBidding","state","agreementImg","isCollect"}
     )
     @GetMapping("add")
     public ResultVO add(Land land){
@@ -123,7 +162,7 @@ public class LandController {
     })
     @ApiOperationSupport(
             ignoreParameters = {"userId","bidPrice","bidUserId", "bidUserName","userName",
-                    "adminId","adminName"}
+                    "adminId","adminName","agreementImg","isCollect"}
     )
     @GetMapping("update")
     public ResultVO update(Land land){
@@ -150,13 +189,13 @@ public class LandController {
     @ApiOperationSupport(
             ignoreParameters = {"address","classify","area","price", "contractPeriod","isBidding",
                     "state","userId","userName","introduction","bidUserId","bidUserName",
-                    "adminId","adminName"}
+                    "adminId","adminName","agreementImg","isCollect"}
     )
     @GetMapping("bidding")
     public ResultVO bidding(Land land){
 
         //1. 通过token，从redis获取用户
-        String access_token = ServletUtils.getRequest().getHeader(ConfigDefault.ADMIN_TOKEN_NAME);
+        String access_token = ServletUtils.getRequest().getHeader(ConfigDefault.USER_TOKEN_NAME);
         User redisUser = (User) redisTemplate.opsForValue().get(access_token);
         if(redisUser == null){
             return ResultVOUtil.error(ResultEnum.NOT_LOGGED_IN); //没有登录
@@ -178,7 +217,7 @@ public class LandController {
     @ApiOperationSupport(
             ignoreParameters = {"address","classify","area","price", "contractPeriod","isBidding",
                     "state","userId","userName","introduction","bidUserId","bidUserName",
-                    "adminId","adminName","bidPrice"}
+                    "adminId","adminName","bidPrice","agreementImg","isCollect"}
     )
     @GetMapping("isBided")
     public ResultVO isBided(Land land){
@@ -190,6 +229,27 @@ public class LandController {
         return ResultVOUtil.error(ResultEnum.PARAMS_ERROR_OR_SYSTEM_EXCEPTION);
     }
 
+    @ApiOperation(value = "修改土地记录（上传合同）")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id" ,value = "土地id", required = true),
+            @ApiImplicitParam(name = "filePath" ,value = "合同图片路径", required = true),
+    })
+    @ApiOperationSupport(
+            ignoreParameters = {"address","classify","area","price", "contractPeriod","isBidding",
+                    "state","userId","userName","introduction","bidUserId","bidUserName",
+                    "adminId","adminName","bidPrice","agreementImg","isCollect"}
+    )
+    @GetMapping("isBided")
+    public ResultVO isBided(Land land, String filePath){
+        land.setAgreementImg(filePath);
+        Land resLand = landService.update(land);
+        if (resLand != null){
+            return ResultVOUtil.success(resLand);
+        }
+        return ResultVOUtil.error(ResultEnum.PARAMS_ERROR_OR_SYSTEM_EXCEPTION);
+    }
+
+
     @ApiOperation(value = "修改土地记录（确定购买）")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id" ,value = "土地id", required = true),
@@ -197,13 +257,13 @@ public class LandController {
     @ApiOperationSupport(
             ignoreParameters = {"address","classify","area","price", "contractPeriod","isBidding",
                     "state","userId","userName","introduction","bidUserId","bidUserName",
-                    "adminId","adminName","bidPrice"}
+                    "adminId","adminName","bidPrice","agreementImg","isCollect"}
     )
     @GetMapping("buy")
     public ResultVO buy(Land land){
 
         //1. 通过token，从redis获取用户
-        String access_token = ServletUtils.getRequest().getHeader(ConfigDefault.ADMIN_TOKEN_NAME);
+        String access_token = ServletUtils.getRequest().getHeader(ConfigDefault.USER_TOKEN_NAME);
         User redisUser = (User) redisTemplate.opsForValue().get(access_token);
         if(redisUser == null){
             return ResultVOUtil.error(ResultEnum.NOT_LOGGED_IN); //没有登录

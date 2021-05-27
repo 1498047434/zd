@@ -1,7 +1,9 @@
 package cn.edkso.zd.service.impl;
 
+import cn.edkso.zd.constant.ExceptionDefault;
 import cn.edkso.zd.dao.UserDao;
 import cn.edkso.zd.entry.User;
+import cn.edkso.zd.exception.CDException;
 import cn.edkso.zd.service.UserService;
 import cn.edkso.zd.utils.MD5Utils;
 import org.apache.commons.lang.StringUtils;
@@ -28,12 +30,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User register(String username, String password, String name) {
+        User resUser = userDao.findByUsername(username);
+        if (resUser != null){
+            throw new CDException(ExceptionDefault.RECORD_EXIST);
+        }
         User user = new User();
         user.setState(1);
         user.setName(name);
         user.setUsername(username);
         user.setPassword(MD5Utils.md5(password));
-        User resUser = userDao.save(user);
+        resUser = userDao.save(user);
         return resUser;
     }
 

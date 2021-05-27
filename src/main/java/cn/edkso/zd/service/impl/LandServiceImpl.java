@@ -1,12 +1,12 @@
 package cn.edkso.zd.service.impl;
 
 import cn.edkso.zd.dao.LandDao;
+import cn.edkso.zd.entry.Admin;
 import cn.edkso.zd.entry.Collect;
 import cn.edkso.zd.entry.Land;
 import cn.edkso.zd.entry.User;
 import cn.edkso.zd.service.CollectService;
 import cn.edkso.zd.service.LandService;
-import cn.edkso.zd.utils.MD5Utils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,8 +16,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.criteria.Predicate;
-import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +34,7 @@ public class LandServiceImpl implements LandService {
         Integer contractPeriodStart = (Integer) map.get("contractPeriodStart");
         Integer contractPeriodEnd = (Integer) map.get("contractPeriodEnd");
         User user = (User) map.get("user");
+        Admin admin = (Admin) map.get("admin");
 
         Pageable pageable = PageRequest.of(page -1,limit);
         Specification specification = (root, cq, cb) -> {
@@ -53,7 +52,6 @@ public class LandServiceImpl implements LandService {
                 predicate.getExpressions().add(cb.equal(root.get("isBidding"), land.getAddress()));
             }
 
-
             //增加筛选条件3(土地承包年限最低 - 土地承包年限最高)
             {
                 if(contractPeriodStart != null && contractPeriodEnd != null){
@@ -68,8 +66,13 @@ public class LandServiceImpl implements LandService {
             }
 
             //增加筛选条件4(土地状态精确匹配)
-
             predicate.getExpressions().add(cb.equal(root.get("state"), 1));
+
+
+            //增加筛选条件5(土地管理员精确匹配)
+            if (admin != null && admin.getGrade() == 2){
+                predicate.getExpressions().add(cb.equal(root.get("adminId"), admin.getId()));
+            }
 
             return predicate;
         };
@@ -143,6 +146,9 @@ public class LandServiceImpl implements LandService {
         }
         if (land.getState() != null){
             oldLand.setState(land.getState());
+        }
+        if (StringUtils.isNotBlank(land.getAgreementImg())){
+            oldLand.setAgreementImg(land.getAgreementImg());
         }
         return landDao.save(land);
     }
