@@ -124,7 +124,7 @@ public class LandController {
             ignoreParameters = {"id","userId","bidPrice","bidUserId", "bidUserName","userName",
                     "adminId","adminName", "isBidding","state","agreementImg","isCollect"}
     )
-    @GetMapping("add")
+    @PostMapping("add")
     public ResultVO add(Land land){
 
         //1. 通过token，从redis获取用户
@@ -163,7 +163,7 @@ public class LandController {
             ignoreParameters = {"userId","bidPrice","bidUserId", "bidUserName","userName",
                     "adminId","adminName","agreementImg","isCollect"}
     )
-    @GetMapping("update")
+    @PostMapping("update")
     public ResultVO update(Land land){
 
         //1. 通过token，从redis获取用户
@@ -190,7 +190,7 @@ public class LandController {
                     "state","userId","userName","introduction","bidUserId","bidUserName",
                     "adminId","adminName","agreementImg","isCollect"}
     )
-    @GetMapping("bidding")
+    @PostMapping("bidding")
     public ResultVO bidding(Land land){
 
         //1. 通过token，从redis获取用户
@@ -218,7 +218,7 @@ public class LandController {
                     "state","userId","userName","introduction","bidUserId","bidUserName",
                     "adminId","adminName","bidPrice","agreementImg","isCollect"}
     )
-    @GetMapping("isBided")
+    @PostMapping("isBided")
     public ResultVO isBided(Land land){
         land.setIsBidding(2);
         Land resLand = landService.update(land);
@@ -238,8 +238,8 @@ public class LandController {
                     "state","userId","userName","introduction","bidUserId","bidUserName",
                     "adminId","adminName","bidPrice","agreementImg","isCollect"}
     )
-    @GetMapping("isBided")
-    public ResultVO isBided(Land land, String filePath){
+    @PostMapping("uploadDoc")
+    public ResultVO uploadDoc(Land land, String filePath){
         land.setAgreementImg(filePath);
         Land resLand = landService.update(land);
         if (resLand != null){
