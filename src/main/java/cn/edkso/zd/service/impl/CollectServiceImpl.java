@@ -18,7 +18,7 @@ public class CollectServiceImpl implements CollectService {
 
     @Override
     public void delByLandId(Integer landId) {
-        collectDao.deleteLandId(landId);
+        collectDao.deleteByLandId(landId);
     }
 
     @Override
@@ -33,6 +33,6 @@ public class CollectServiceImpl implements CollectService {
 
     @Override
     public List<Collect> findAllByUserId(Integer userId) {
-        return collectDao.findAllByUserId();
+        return collectDao.findAllByUserId(userId);
     }
 }

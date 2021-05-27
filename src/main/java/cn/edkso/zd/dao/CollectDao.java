@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface CollectDao extends JpaRepository<Collect, Integer> {
-    void deleteLandId(Integer landId);
+    void deleteByLandId(Integer landId);
 
-    List<Collect> findAllByUserId();
+    List<Collect> findAllByUserId(Integer userId);
 }
