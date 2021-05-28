@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -83,7 +84,7 @@ public class ReportController {
 
     @ApiOperation(value = "增加举报记录")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "landId" ,value = "", required = true),
+            @ApiImplicitParam(name = "landId" ,value = "土地Id", required = true),
             @ApiImplicitParam(name = "landAddress" ,value = "土地地址", required = true),
             @ApiImplicitParam(name = "landClassify" ,value = "土地分类", required = true),
             @ApiImplicitParam(name = "adminId" ,value = "管理员id", required = true),
@@ -92,7 +93,7 @@ public class ReportController {
     @ApiOperationSupport(
             ignoreParameters = {"id","userId","userName","state"}
     )
-    @GetMapping("add")
+    @PostMapping("add")
     public ResultVO add(Report report){
         //1. 通过token，从redis获取用户
         String access_token = ServletUtils.getRequest().getHeader(ConfigDefault.USER_TOKEN_NAME);
