@@ -26,7 +26,7 @@ public class Appointment {
     private String adminName;
     private String adminTel;
 
-    private Integer state;
+    private Integer state; //0无人查看，1有人处理
     private Timestamp appointedTime;
     private String appointedAddress;
 

@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -86,20 +87,20 @@ public class AppointmentController {
 
     @ApiOperation(value = "增加预约记录")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "landId" ,value = "", required = true),
+            @ApiImplicitParam(name = "landId" ,value = "土地id", required = true),
             @ApiImplicitParam(name = "landAddress" ,value = "土地地址", required = true),
             @ApiImplicitParam(name = "landClassify" ,value = "土地分类", required = true),
-            @ApiImplicitParam(name = "userTel" ,value = "土地分类", required = true),
+            @ApiImplicitParam(name = "userTel" ,value = "用户电话", required = true),
             @ApiImplicitParam(name = "adminId" ,value = "管理员id", required = true),
             @ApiImplicitParam(name = "adminName" ,value = "管理员名字", required = true),
-            @ApiImplicitParam(name = "appointedTime" ,value = "管理员名字", required = true),
-            @ApiImplicitParam(name = "appointedAddress" ,value = "管理员名字", required = true),
+            @ApiImplicitParam(name = "appointedTime" ,value = "预约时间", required = true),
+            @ApiImplicitParam(name = "appointedAddress" ,value = "预约地点", required = true),
     })
 
     @ApiOperationSupport(
             ignoreParameters = {"id","adminTel","state","userId","adminName"}
     )
-    @GetMapping("add")
+    @PostMapping("add")
     public ResultVO add(Appointment appointment){
         //1. 通过token，从redis获取用户
         String access_token = ServletUtils.getRequest().getHeader(ConfigDefault.USER_TOKEN_NAME);

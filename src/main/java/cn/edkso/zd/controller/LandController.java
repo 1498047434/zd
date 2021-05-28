@@ -245,6 +245,7 @@ public class LandController {
     @PostMapping("uploadDoc")
     public ResultVO uploadDoc(Land land, String filePath){
         land.setAgreementImg(filePath);
+        land.setIsBidding(3); //1竞价中,0未竟价，2竞价结束，3合同已签订
         Land resLand = landService.update(land);
         if (resLand != null){
             return ResultVOUtil.success(resLand);
@@ -262,7 +263,7 @@ public class LandController {
                     "state","userId","userName","introduction","bidUserId","bidUserName",
                     "adminId","adminName","bidPrice","agreementImg","isCollect"}
     )
-    @GetMapping("buy")
+    @PostMapping("buy")
     public ResultVO buy(Land land){
 
         //1. 通过token，从redis获取用户
