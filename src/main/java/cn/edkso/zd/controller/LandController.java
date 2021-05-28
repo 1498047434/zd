@@ -69,6 +69,10 @@ public class LandController {
         tl.set(map);
 
         Page<Land> landPage = landService.listByPage(page, limit,land,tl);
+        for (Land curLand : landPage.getContent()) {
+            curLand.setCurUserId(redisUser.getId());
+        }
+
         return ResultVOUtil.success(landPage);
     }
 

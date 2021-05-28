@@ -32,4 +32,6 @@ public class Land {
 
     @Transient //不进行持久化（与数据库非关）
     private Integer isCollect = 0; //0未收藏，1收藏
+    @Transient //不进行持久化（与数据库非关）
+    private Integer curUserId; //当前查询用户
 }
