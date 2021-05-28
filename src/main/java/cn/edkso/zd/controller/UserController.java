@@ -69,7 +69,7 @@ public class UserController {
                 return ResultVOUtil.error(ResultEnum.LOGIN_ERROR);
             }
             //4. 把（token，用户）存储到redis
-            redisTemplate.opsForValue().set(token, user,8 ,TimeUnit.HOURS);
+            redisTemplate.opsForValue().set(token, user,800 ,TimeUnit.MINUTES);
 
             //5. 返回
             Map<String, Object> map = new HashMap<>();

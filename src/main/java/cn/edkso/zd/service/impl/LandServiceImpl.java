@@ -151,7 +151,7 @@ public class LandServiceImpl implements LandService {
         if (StringUtils.isNotBlank(land.getAgreementImg())){
             oldLand.setAgreementImg(land.getAgreementImg());
         }
-        return landDao.save(land);
+        return landDao.save(oldLand);
     }
 
     @Override
