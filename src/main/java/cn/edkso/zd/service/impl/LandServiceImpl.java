@@ -46,14 +46,13 @@ public class LandServiceImpl implements LandService {
                 predicate.getExpressions().add(cb.like(root.get("address"), land.getAddress()));
             }
             //增加筛选条件1(土地分类精确匹配)
-            if (land.getClassify() != null){
+            if (land.getClassify() != null && land.getClassify() != -1){
                 predicate.getExpressions().add(cb.equal(root.get("classify"), land.getAddress()));
             }
             //增加筛选条件2(土地出价精确匹配)
-            if (land.getIsBidding() != null){
+            if (land.getIsBidding() != null && land.getIsBidding() != -1){
                 predicate.getExpressions().add(cb.equal(root.get("isBidding"), land.getAddress()));
             }
-
             //增加筛选条件3(土地承包年限最低 - 土地承包年限最高)
             {
                 if(contractPeriodStart != null && contractPeriodEnd != null){

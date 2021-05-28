@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,13 +32,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User register(User user) {
-        User resUser = userDao.findByUsername(user.getName());
-        if (resUser != null){
+        List<User> resUserList = userDao.findByUsername(user.getUsername());
+
+        if (resUserList.size() != 0){
             throw new CDException(ExceptionDefault.RECORD_EXIST);
         }
-
         user.setPassword(MD5Utils.md5(user.getPassword()));
-        resUser = userDao.save(user);
+        User resUser = userDao.save(user);
         return resUser;
     }
 

@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Api(tags = "管理员模块")
 @RestController
@@ -65,7 +66,7 @@ public class AdminController {
                 return ResultVOUtil.error(ResultEnum.LOGIN_ERROR);
             }
             //4. 把（token，用户）存储到redis
-            redisTemplate.opsForValue().set(token, admin);
+            redisTemplate.opsForValue().set(token, admin,8 , TimeUnit.HOURS);
 
             //5. 返回
             Map<String, Object> map = new HashMap<>();

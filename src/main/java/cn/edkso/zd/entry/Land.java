@@ -14,7 +14,7 @@ public class Land {
     private Integer id;
 
     private String address;
-    private Integer classify; //1林地，2鱼塘，3果园，4菜棚，5耕地
+    private Integer classify ; //1林地，2鱼塘，3果园，4菜棚，5耕地
     private Integer area;
     private BigDecimal price;
     private Integer contractPeriod;

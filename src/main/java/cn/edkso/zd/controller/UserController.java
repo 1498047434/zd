@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Api(tags = "用户模块")
 @RestController
@@ -68,7 +69,7 @@ public class UserController {
                 return ResultVOUtil.error(ResultEnum.LOGIN_ERROR);
             }
             //4. 把（token，用户）存储到redis
-            redisTemplate.opsForValue().set(token, user);
+            redisTemplate.opsForValue().set(token, user,8 ,TimeUnit.HOURS);
 
             //5. 返回
             Map<String, Object> map = new HashMap<>();
@@ -92,10 +93,10 @@ public class UserController {
             ignoreParameters = {"id","state","idcardImg"}
     )
     @PostMapping("register")
-    public ResultVO register(User user,String filePath){
+    public ResultVO register(User user, String filePath){
 
         user.setIdcardImg(filePath);
-
+        user.setState(0); //0未审核，1已审核
         try {
             User resUser = userService.register(user);
             if (resUser != null){
