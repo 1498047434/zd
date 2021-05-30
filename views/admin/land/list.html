@@ -1,0 +1,267 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>layuiAdmin 内容系统 - 文章列表</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="../../../layuiadmin/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="../../../layuiadmin/style/admin.css" media="all">
+</head>
+<body>
+
+  <div class="layui-fluid">
+    <div class="layui-card">
+      <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+        <div class="layui-form-item">
+          <div>
+            <div class="layui-inline" >
+              <label class="layui-form-label">土地地址</label>
+              <div class="layui-input-inline">
+                <input type="text" name="address" placeholder="请输入地址关键词" autocomplete="off" class="layui-input">
+              </div>
+            </div>
+            <div class="layui-inline" >
+              <label class="layui-form-label">土地分类</label>
+              <div class="layui-input-inline">
+                <select name="classify" lay-verify="required">
+                  <option value="-1">不分类</option> <!-- //1林地，2鱼塘，3果园，4菜棚，5耕地 -->
+                  <option value="1">林地</option>
+                  <option value="2">鱼塘</option>
+                  <option value="3">果园</option>
+                  <option value="4">菜棚</option>
+                  <option value="4">耕地</option>
+                </select>
+              </div>
+            </div>
+            <div class="layui-inline" >
+              <label class="layui-form-label">是否竞价</label>
+              <div class="layui-input-inline">
+                <select name="isBidding" lay-verify="required">
+                  <option value="-1">无要求</option> <!-- ////1竞价中,0未竟价，2竞价结束 -->
+                  <option value="0">未竟价</option>
+                  <option value="1">竞价中</option>
+                  <option value="2">竞价结束</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="layui-inline" >
+              <label class="layui-form-label">最低租期</label>
+              <div class="layui-input-inline" >
+                <input type="text" name="contractPeriodStart" class="layui-input" id="startTime" autocomplete="off" placeholder="不输入无限制">
+              </div>
+            </div>
+  
+            <div class="layui-inline">
+              <label class="layui-form-label">最高租期</label>
+              <div class="layui-input-inline" >
+                <input type="text" name="contractPeriodEnd" class="layui-input" id="deadline" autocomplete="off" placeholder="不输入无限制">
+              </div>
+            </div>
+            <div style="width: 33px; display: inline-block;"></div>
+            <div class="layui-inline">
+              
+              <button class="layui-btn layuiadmin-btn-list" lay-submit lay-filter="LAY-app-land-search">
+                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="layui-card-body">
+        <div style="padding-bottom: 10px;">
+          <!-- <button class="layui-btn layuiadmin-btn-list" data-type="batchdel">删除</button> -->
+          <button class="layui-btn layuiadmin-btn-list" data-type="add">添加</button>
+        </div>
+        <table id="LAY-app-land-list" lay-filter="LAY-app-land-list"></table>
+        <script type="text/html" id="buttonTpl-classify">
+          <!-- //1林地，2鱼塘，3果园，4菜棚，5耕地 -->
+          {{#  if(d.classify == 1){ }}
+            林地
+          {{#  } else if(d.classify == 2) { }}
+            鱼塘
+          {{#  } else if(d.classify == 3) { }}
+            果园
+          {{#  } else if(d.classify == 4) { }}
+            菜棚
+          {{#  } else {}}
+            耕地
+          {{#  } }}
+        </script>
+        <script type="text/html" id="buttonTpl-bidPrice">
+          {{#  if(d.isBidding == 1){ }}
+            <button class="layui-btn layui-btn-danger layui-btn-xs">{{d.bidPrice}}</button>
+          {{#  } else if(d.isBidding == 2) { }}
+            <button class="layui-btn layui-btn-disabled  layui-btn-xs">{{d.bidPrice}}</button>
+            {{#  } else if(d.isBidding == 3) { }}
+            <button class="layui-btn layui-btn-disabled  layui-btn-xs">{{d.bidPrice}}</button>
+          {{#  } else {}}
+            未竟价
+            <!-- <button class="layui-btn layui-btn-disabled  layui-btn-xs">未竟价</button> -->
+          {{#  } }}
+        </script>
+        <script type="text/html" id="buttonTpl-bidUserName">
+          {{#  if(d.isBidding == 1 || d.isBidding == 2|| d.isBidding == 3){ }}
+            {{d.bidUserName}}
+            <!-- <button class="layui-btn layui-btn-danger layui-btn-xs">{{d.bidUserName}}</button> -->
+          {{#  } else { }}
+            无
+            <!-- <button class="layui-btn layui-btn-disabled  layui-btn-xs">无</button> -->
+          {{#  } }}
+        </script>
+
+
+
+        <script type="text/html" id="table-content-list">
+          <!-- 竞价-->
+          {{#  if(d.isBidding == 1){ }}
+            <a class="layui-btn  layui-btn-xs" style="background-color: #645951d5;" lay-event="end">
+              <i class="layui-icon layui-icon-edit"></i>结束竞价
+            </a>
+          {{#  } else if(d.isBidding == 0) { }}
+            <a class="layui-btn layui-btn-disabled layui-btn-xs"><i class="layui-icon layui-icon-ok"></i>暂未竞价</a>
+          {{#  } else if(d.isBidding == 2) { }}
+            <a class="layui-btn layui-btn-disabled layui-btn-xs"><i class="layui-icon layui-icon-ok"></i>竞价结束</a>
+          {{#  } else { }}
+            <a class="layui-btn layui-btn-disabled layui-btn-xs"><i class="layui-icon layui-icon-ok"></i>合同已签</a>
+          {{#  } }}
+
+          <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
+          <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
+        </script>
+      </div>
+
+      <button style="display: none;" type="button" class="layui-btn" id="agreement-file">
+        <i class="layui-icon">&#xe67c;</i>上传文件
+      </button>
+    </div>
+  </div>
+
+
+
+  <script src="../../../layuiadmin/layui/layui.js"></script>
+  <script>
+  layui.config({
+    base: '../../../layuiadmin/' //静态资源所在路径
+  }).extend({
+    index: 'lib/index' //主入口模块
+    ,adminlist: 'adminview/adminlist'
+  }).use(['index' ,'adminlist', 'table'], function(){
+    var table = layui.table
+    ,admin = layui.admin
+    ,laydate = layui.laydate
+    ,upload = layui.upload
+    ,setter = layui.setter
+    ,form = layui.form;
+  
+
+    //监听搜索
+    form.on('submit(LAY-app-land-search)', function(data){
+      var field = data.field;
+    
+      //执行重载
+      table.reload('LAY-app-land-list', {
+        where: field
+      });
+    });
+  
+
+
+    //执行实例【文件上传】
+    uploadInst = upload.render({
+      elem: '#agreement-file' //绑定元素
+      ,url: layui.setter.reqUrl + '/files/upload' //上传接口
+      ,accept: 'file' //允许上传的文件类型
+      ,done: function(res){
+        if(res.code == 0){
+          //上传完毕回调
+          admin.req({
+              url: layui.setter.reqUrl + '/land/uploadDoc' //实际使用请改成服务端真实接口
+              ,type: 'post'
+              ,data: {
+                id: submit_agreement_data.id
+                ,filePath: res.data.filePath
+              }
+              ,done: function(res1){
+                layer.msg('确认购买成功！合同上传完成！');
+                layui.table.reload('LAY-app-land-list'); //重载表格
+              }
+            });
+        }else{
+          //请求异常回调
+          layer.msg('上传文件失败，请务必重新上传文件！');
+        }
+      }
+      ,error: function(){
+        //请求异常回调
+        layer.msg('上传文件失败，请务必重新上传文件！');
+      }
+    });
+
+    console.log("执行到这里了")
+
+    var $ = layui.$, active = {
+      batchdel: function(){
+        var checkStatus = table.checkStatus('LAY-app-content-list')
+        ,checkData = checkStatus.data; //得到选中的数据
+
+        console.log(JSON.stringify(checkData))
+        if(checkData.length === 0){
+          return layer.msg('请选择数据');
+        }
+      
+        layer.confirm('确定删除吗？', function(index) {
+          
+          //执行 Ajax 后重载
+          /*
+          admin.req({
+            url: 'xxx'
+            //,……
+          });
+          */
+          admin.req({
+            url: layui.setter.reqUrl + '/clazz/del' //实际使用请改成服务端真实接口
+            ,data: JSON.stringify(checkData)
+            ,type: 'post'
+            ,contentType:'application/json'
+            ,done: function(res){
+              table.reload('LAY-app-content-list');
+              layer.msg('已删除');
+            }
+          });
+          // table.reload('LAY-app-content-list');
+          // layer.msg('已删除');
+        });
+      },
+      add: function(){
+        layer.open({
+          type: 2
+          ,title: '添加文章'
+          ,content: 'listform.html'
+          ,maxmin: true
+          ,area: ['550px', '550px']
+          ,btn: ['确定', '取消']
+          ,yes: function(index, layero){
+            //点击确认触发 iframe 内容中的按钮提交
+            var submit = layero.find('iframe').contents().find("#layuiadmin-app-form-submit");
+            submit.click();
+          }
+        }); 
+      }
+    }; 
+
+    $('.layui-btn.layuiadmin-btn-list').on('click', function(){
+      var type = $(this).data('type');
+      active[type] ? active[type].call(this) : '';
+    });
+
+  });
+  </script>
+</body>
+</html>

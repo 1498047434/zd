@@ -1,0 +1,159 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>layuiAdmin 内容系统 - 文章列表</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="../../../layuiadmin/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="../../../layuiadmin/style/admin.css" media="all">
+</head>
+<body>
+
+  <div class="layui-fluid">
+    <div class="layui-card">
+
+      <div class="layui-card-body">
+        <table id="LAY-app-report-list" lay-filter="LAY-app-report-list"></table>
+        <script type="text/html" id="buttonTpl-classify">
+          <!-- //1林地，2鱼塘，3果园，4菜棚，5耕地 -->
+          {{#  if(d.classify == 1){ }}
+            林地
+          {{#  } else if(d.classify == 2) { }}
+            鱼塘
+          {{#  } else if(d.classify == 3) { }}
+            果园
+          {{#  } else if(d.classify == 4) { }}
+            菜棚
+          {{#  } else {}}
+            耕地
+          {{#  } }}
+        </script>
+
+        <script type="text/html" id="buttonTpl-bidUserName">
+          {{#  if(d.state == 0){ }}
+            <a class="layui-btn layui-btn-primary layui-btn-radius layui-btn-xs" lay-event="addCollect"></i>未处理</a>
+          {{#  } else { }}
+            <a class="layui-btn layui-btn-radius layui-btn-xs" lay-event="cancelCollect"></i>已处理</a>
+          {{#  } }}
+        </script>
+
+
+
+        <script type="text/html" id="table-content-list">
+          <!-- 竞价和签合同 -->
+          <!-- {{#  if(d.isBidding == 1 || d.isBidding == 0){ }}
+            <a class="layui-btn  layui-btn-xs" style="background-color: #645951d5;" lay-event="takeBid">
+              <i class="layui-icon layui-icon-edit"></i>参与竞价
+            </a>
+          {{#  } else if(d.isBidding == 2 && d.bidUserId == d.curUserId) { }}
+            <button type="button" class="layui-btn layui-btn-xs" lay-event="uoload-agreement" id="uoload-agreement">
+              <i class="layui-icon layui-icon-upload-drag"></i>上传合同
+            </button>
+          {{#  } else if(d.isBidding == 3) { }}
+          <button type="button" class="layui-btn layui-btn-xs" lay-event="" id="">
+            <i class="layui-icon layui-icon-ok"></i>合同已签
+          </button>
+          {{#  } else { }}
+            <a class="layui-btn layui-btn-disabled layui-btn-xs"><i class="layui-icon layui-icon-ok"></i>非你所属</a>
+          {{#  } }} -->
+
+          <!-- 预约看地 -->
+          <!-- <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="appointment"><i class="layui-icon llayui-icon-edit"></i>预约看地</a> -->
+          <!-- 举报地源 -->
+          <!-- <a class="layui-btn layui-btn-danger layui-btn-radius layui-btn-xs" lay-event="report"><i class="layui-icon layui-icon-at"></i>举报</a> -->
+
+
+          <!-- {{#  if(d.isCollect == 0){ }}
+            <a class="layui-btn layui-btn-primary layui-btn-radius layui-btn-xs" lay-event="addCollect"><i class="layui-icon layui-icon-addition"></i>加收藏</a>
+          {{#  } else { }}
+            <a class="layui-btn layui-btn-radius layui-btn-xs" lay-event="cancelCollect"><i class="layui-icon layui-icon-subtraction"></i>取收藏</a>
+          {{#  } }} -->
+        </script>
+      </div>
+
+      <button style="display: none;" type="button" class="layui-btn" id="agreement-file">
+        <i class="layui-icon">&#xe67c;</i>上传文件
+      </button>
+    </div>
+  </div>
+
+
+
+  <script src="../../../layuiadmin/layui/layui.js"></script>
+  <script>
+  layui.config({
+    base: '../../../layuiadmin/' //静态资源所在路径
+  }).extend({
+    index: 'lib/index' //主入口模块
+    ,userlist: 'userview/userlist'
+  }).use(['index' ,'userlist', 'table'], function(){
+    var table = layui.table
+    ,admin = layui.admin
+    ,laydate = layui.laydate
+    ,upload = layui.upload
+    ,setter = layui.setter
+    ,form = layui.form;
+  
+
+    //监听搜索
+    form.on('submit(LAY-app-report-search)', function(data){
+      var field = data.field;
+    
+      //执行重载
+      table.reload('LAY-app-report-list', {
+        where: field
+      });
+    });
+  
+
+
+    //执行实例【文件上传】
+    uploadInst = upload.render({
+      elem: '#agreement-file' //绑定元素
+      ,url: layui.setter.reqUrl + '/files/upload' //上传接口
+      ,accept: 'file' //允许上传的文件类型
+      ,done: function(res){
+        if(res.code == 0){
+          //上传完毕回调
+          admin.req({
+              url: layui.setter.reqUrl + '/land/uploadDoc' //实际使用请改成服务端真实接口
+              ,type: 'post'
+              ,data: {
+                id: submit_agreement_data.id
+                ,filePath: res.data.filePath
+              }
+              ,done: function(res1){
+                layer.msg('确认购买成功！合同上传完成！');
+                layui.table.reload('LAY-app-land-list'); //重载表格
+              }
+            });
+        }else{
+          //请求异常回调
+          layer.msg('上传文件失败，请务必重新上传文件！');
+        }
+      }
+      ,error: function(){
+        //请求异常回调
+        layer.msg('上传文件失败，请务必重新上传文件！');
+      }
+    });
+
+    console.log("执行到这里了")
+
+    var $ = layui.$, active = {
+
+    }; 
+
+    $('.layui-btn.layuiadmin-btn-list').on('click', function(){
+      var type = $(this).data('type');
+      active[type] ? active[type].call(this) : '';
+    });
+
+  });
+  </script>
+</body>
+</html>

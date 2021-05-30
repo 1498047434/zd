@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>layuiAdmin 提交竞价 iframe 框</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="../../../layuiadmin/layui/css/layui.css" media="all">
+</head>
+<body>
+
+
+  <div class="layui-form"  lay-filter="layuiadmin-app-form-list" id="layuiadmin-app-form-list" style="padding: 20px 30px 0 0;">
+
+    <div class="layui-form-item" hidden>
+      <label class="layui-form-label">土地id</label>
+      <div class="layui-input-inline" style="width: 337px">
+        <input  type="text" name="landId" id="landId" lay-verify="required" placeholder="请输入大于的价格大于目前竞价价格" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-form-item" hidden>
+      <label class="layui-form-label">土地地址</label>
+      <div class="layui-input-inline" style="width: 337px">
+        <input  type="text" name="landAddress" id="landAddress" lay-verify="required" placeholder="请输入大于的价格大于目前竞价价格" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-form-item" hidden>
+      <label class="layui-form-label">土地分类</label>
+      <div class="layui-input-inline" style="width: 337px">
+        <input  type="text" name="landClassify" id="landClassify" lay-verify="required" placeholder="请输入大于的价格大于目前竞价价格" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-form-item" hidden>
+      <label class="layui-form-label">管理员id</label>
+      <div class="layui-input-inline" style="width: 337px">
+        <input  type="text" name="adminId" id="adminId" lay-verify="required" placeholder="请输入大于的价格大于目前竞价价格" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-form-item" hidden>
+      <label class="layui-form-label">管理员名字</label>
+      <div class="layui-input-inline" style="width: 337px">
+        <input  type="text" name="adminName" id="adminName" lay-verify="required" placeholder="请输入大于的价格大于目前竞价价格" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+
+
+
+    <div class="layui-form-item">
+      <label class="layui-form-label">用户电话</label>
+      <div class="layui-input-inline" style="width: 337px">
+        <input  type="text" name="userTel" id="userTel" lay-verify="required" placeholder="请输入用户电话" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">预约时间</label>
+      <div class="layui-input-inline" style="width: 337px">
+        <input type="text" name="appointedTime" class="layui-input" id="appointedTime" autocomplete="off" placeholder="请选择预约时间">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">预约地点</label>
+      <div class="layui-input-inline" style="width: 337px">
+        <input  type="text" name="appointedAddress" id="appointedAddress" lay-verify="appointedAddress" placeholder="请输入预约地点" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    
+
+    <div class="layui-form-item layui-hide">
+      <input type="button" lay-submit lay-filter="layuiadmin-app-form-submit" id="layuiadmin-app-form-submit" value="确认添加">
+      <input type="button" lay-submit lay-filter="layuiadmin-app-form-edit" id="layuiadmin-app-form-edit" value="确认编辑">
+    </div>
+  </div>
+
+
+  <script src="../../../layuiadmin/layui/layui.js"></script>  
+  <script>
+  layui.config({
+    base: '../../../layuiadmin/' //静态资源所在路径
+  }).extend({
+    index: 'lib/index' //主入口模块
+  }).use(['index' ,'form'], function(){
+    var $ = layui.$
+    ,admin = layui.admin
+    ,setter = layui.setter
+    ,upload = layui.upload
+    ,laydate = layui.laydate
+    ,form = layui.form;
+    
+
+    //执行一个laydate实例【日期选择】
+    laydate.render({
+      elem: '#appointedTime' //指定元素
+      // ,show: true //直接显示
+      ,trigger: 'click' //采用click弹出
+      ,theme: 'molv'
+      ,format: 'yyyy-MM-dd HH:mm:ss' //可任意组合
+      ,type: 'datetime'
+    });
+
+
+    //发布作业，为表单设置值[班级id,班级name]【来自表格中发布作业按钮】
+    var recordJson = eval('('+parent.json+')');
+    if(recordJson != null){
+      $(function () {
+        $('#landId').val(recordJson.id);
+        $('#landAddress').val(recordJson.address);
+        $('#landClassify').val(recordJson.classify);
+        $('#adminId').val(recordJson.adminId);
+        $('#adminName').val(recordJson.adminName);
+      });
+    }
+
+  })
+  </script>
+</body>
+</html>

@@ -1,0 +1,161 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>注册</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="../../layuiadmin/style/admin.css" media="all">
+  <link rel="stylesheet" href="../../layuiadmin/style/login.css" media="all">
+</head>
+<body>
+
+
+  <div class="layadmin-user-login layadmin-user-display-show" id="LAY-user-login" style="display: none;">
+    <div class="layadmin-user-login-main">
+      <div class="layadmin-user-login-box layadmin-user-login-header">
+        <h2>用户注册</h2>
+        <p> </p>
+      </div>
+      <div class="layadmin-user-login-box layadmin-user-login-body layui-form">
+        <div class="layui-form-item">
+          <label class="layadmin-user-login-icon layui-icon layui-icon-username" for="LAY-user-login-cellphone"></label>
+          <input type="text" name="username" id="LAY-user-login-cellphone" lay-verify="number" placeholder="账号" class="layui-input">
+        </div>
+        <div class="layui-form-item">
+          <label class="layadmin-user-login-icon layui-icon layui-icon-password" for="LAY-user-login-password"></label>
+          <input type="password" name="password" id="LAY-user-login-password" lay-verify="pass" placeholder="密码" class="layui-input">
+        </div>
+        <div class="layui-form-item">
+          <label class="layadmin-user-login-icon layui-icon layui-icon-password" for="LAY-user-login-repass"></label>
+          <input type="password" name="repass" id="LAY-user-login-repass" lay-verify="required" placeholder="确认密码" class="layui-input">
+        </div>
+        <div class="layui-form-item">
+          <label class="layadmin-user-login-icon layui-icon layui-icon-user" for="LAY-user-login-nickname"></label>
+          <input type="text" name="name" id="LAY-user-login-name" lay-verify="nickname" placeholder="姓名" class="layui-input">
+        </div>
+        <div class="layui-form-item">
+          <label class="layadmin-user-login-icon layui-icon layui-icon-note" for="LAY-user-login-nickname"></label>
+          <input type="text" name="idcard" id="LAY-user-login-idcard" lay-verify="identity" placeholder="身份证号" class="layui-input">
+        </div>
+        <div class="layui-form-item" style="display: none;">
+          <label class="layadmin-user-login-icon layui-icon layui-icon-note" for="LAY-user-login-nickname"></label>
+          <input type="text" name="filePath" id="filePath"  placeholder="身份证图片路径" class="layui-input">
+        </div>
+        <div class="layui-form-item">
+          <!-- <label class="layui-form-label"></label> -->
+          <button type="button" class="layui-btn" id="homework-file">
+            <i class="layui-icon">&#xe67c;</i>手持身份证照上传
+          </button>
+        </div>
+        <div class="layui-form-item">
+          <input type="checkbox" name="agreement" lay-skin="primary" title="同意用户协议" checked>
+          <a href="login.html" class="layadmin-user-jump-change layadmin-link layui-hide-xs" style="margin-top: 8px;">用已有帐号登入</a>
+        </div>
+        <div class="layui-form-item">
+          <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="LAY-user-reg-submit">注 册</button>
+        </div>
+
+        <!-- <div class="layui-trans layui-form-item layadmin-user-login-other">
+          <label>社交账号注册</label>
+          <a href="javascript:;"><i class="layui-icon layui-icon-login-qq"></i></a>
+          <a href="javascript:;"><i class="layui-icon layui-icon-login-wechat"></i></a>
+          <a href="javascript:;"><i class="layui-icon layui-icon-login-weibo"></i></a>
+          
+          <a href="login.html" class="layadmin-user-jump-change layadmin-link layui-hide-xs">用已有帐号登入</a>
+          <a href="login.html" class="layadmin-user-jump-change layadmin-link layui-hide-sm layui-show-xs-inline-block">登入</a>
+        </div> -->
+      </div>
+    </div>
+    
+    <div class="layui-trans layadmin-user-login-footer">
+      
+      <p>© 2021 </p>
+
+    </div>
+
+  </div>
+
+  <script src="../../layuiadmin/layui/layui.js"></script>  
+  <script>
+  layui.config({
+    base: '../../layuiadmin/' //静态资源所在路径
+  }).extend({
+    index: 'lib/index' //主入口模块
+  }).use(['index', 'user', 'layer'], function(){
+    var $ = layui.$
+    ,setter = layui.setter
+    ,admin = layui.admin
+    ,form = layui.form
+    ,upload = layui.upload
+    ,router = layui.router();
+
+    form.render();
+
+
+    //执行实例【文件上传】
+    var uploadInst = upload.render({
+      elem: '#homework-file' //绑定元素
+      ,url: layui.setter.reqUrl + '/files/upload' //上传接口
+      ,accept: 'file' //允许上传的文件类型
+      ,done: function(res){
+        if(res.code == 0){
+          console.log(res)
+          console.log(res.data.msg)
+          //上传完毕回调
+          layer.msg('上传完成！');
+          $('#filePath').val(res.data.filePath);
+        }else{
+          //请求异常回调
+          layer.msg('上传文件失败，请务必重新上传文件！');
+        }
+      }
+      ,error: function(){
+        //请求异常回调
+        layer.msg('上传文件失败，请务必重新上传文件！');
+      }
+    });
+
+
+    //提交
+    form.on('submit(LAY-user-reg-submit)', function(obj){
+      var field = obj.field;
+      
+      //确认密码
+      if(field.password !== field.repass){
+        return layer.msg('两次密码输入不一致');
+      }
+      
+      //是否同意用户协议
+      if(!field.agreement){
+        return layer.msg('你必须同意用户协议才能注册');
+      }
+
+      if(field.filePath == ''){
+        return layer.msg('你必须先上传身份证照片');
+      }
+      //请求接口
+      admin.req({
+        url: layui.setter.reqUrl + '/user/register' //实际使用请改成服务端真实接口
+        ,data: field
+        ,type: 'post'
+        ,done: function(res){    
+          layer.msg('注册成功', {
+            offset: '15px'
+            ,icon: 1
+            ,time: 1000
+          }, function(){
+            location.href = layui.setter.staticUrl +'/login.html'; //跳转到登入页
+          });
+        }
+      });
+      return false;
+    });
+  });
+  </script>
+</body>
+</html>
